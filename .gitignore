@@ -1,0 +1,6 @@
+env 
+__pycache__
+test.py
+secrets.sh
+node_modules
+supported_tickers.json

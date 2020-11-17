@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title> Stock analysis </title>    
+    <link rel="stylesheet" href="/static/styles.css"/>
+    <script crossorigin src="/static/lib/react.development.js"></script>
+    <script crossorigin src="/static/lib/react-dom.development.js"></script>
+    <script crossorigin src="/static/lib/babel-standalone.js"></script>
+    <script src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js" crossorigin></script>
+    <!-- OR an un-minified version is also available -->
+    <script src="https://cdn.plot.ly/plotly-latest.js" charset="utf-8"></script>
+    <script
+    src="http://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+        crossorigin="anonymous"/>
+</head>
+
+<body>
+
+  <!-- This is where the main content goes. -->
+  {% block body %}
+      BODY OF PAGE GOES HERE VIA INHERITANCE
+  {% endblock %}
+  
+</body>
+</html>

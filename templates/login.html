@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+  <div id="root"></div>
+  <script type="text/jsx" src="/static/scripts/hello.jsx"></script>
+  <!-- Create a div for every Most Loved Melon using a Jinja for-loop -->
+  
+  <form action= "/login"  method="POST">
+    Email:   <input type="text" name="email" required><br>
+    <br />
+    
+    password:  <input type="password" name="password" required><br>
+    <br />
+    <input type= "submit" value="Login">
+
+</form>
+New user ? <a href="/user/register">click here</a>
+ 
+  
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <h1> Create Account </h1>
+    
+    <form action= "/adduser"  method="POST">
+        Email:   <input type="text" name="email" required><br>
+        <br />
+        First Name:  <input type="text" name="fname" required><br>
+        <br />
+        Last Name:  <input type="text" name="lname" required><br>
+        <br />
+        password:  <input type="password" name="password" required><br>
+        <br />
+        <input type= "submit" value="Sign Up">
+    </form>
+    <img class="center" src="https://dfi.wa.gov/sites/default/files/investing-stocks-16x9.jpg"><br>
+    <br />
+    <br />
+    
+{% endblock %}
+  
