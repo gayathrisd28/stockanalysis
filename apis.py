@@ -65,3 +65,6 @@ historical_prices = client.get_ticker_price("GOOGL",
 def get_ticker_news(ticker,start_date,end_date):
     return finnhub_client.company_news(ticker, start_date, end_date)
 
+def get_recommendation_trends(ticker):
+    return finnhub_client.recommendation_trends(ticker)
+

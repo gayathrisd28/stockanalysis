@@ -35,16 +35,19 @@
         <Greeting userid={userid}></Greeting>
         <SearchStocks userid={userid}></SearchStocks>
         <div id='topContainer' hidden='true'>
-        <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
-        <div class="btn-group" role="group" aria-label="...">
-          <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
-          <button type="button" id='4weeks' class="btn btn-link">4 weeks</button>
-          <button type="button" id='3months' class="btn btn-link">3 months</button>
-          <button type="button" id='6months' class="btn btn-link">6 months</button>
-          <button type="button" id='1year' class="btn btn-link">1 year</button>
+          <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
+          <div class="btn-group" role="group" aria-label="...">
+            <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
+            <button type="button" id='4weeks' class="btn btn-link">4 weeks</button>
+            <button type="button" id='3months' class="btn btn-link">3 months</button>
+            <button type="button" id='6months' class="btn btn-link">6 months</button>
+            <button type="button" id='1year' class="btn btn-link">1 year</button>
+          </div>
+          <div id='defaultChart'></div>
+          <h3>Recommendation Trends</h3>
+          <div id='trendsChart'></div>
         </div>
-        <div id='defaultChart'></div>
-        </div>
+
         
         <FavListStocks userid={userid}></FavListStocks>
        
@@ -241,7 +244,46 @@
         type: 'scatter'
       };
       
-     
+      var strongBuy = {
+        x: details['trends']['period'],
+        y: details['trends']['strongBuy'],
+        name: 'strongBuy',
+        type: 'bar'
+      };
+      
+      var buy = {
+        x: details['trends']['period'],
+        y: details['trends']['buy'],
+        name: 'buy',
+        type: 'bar'
+      };
+
+      var sell = {
+        x: details['trends']['period'],
+        y: details['trends']['sell'],
+        name: 'sell',
+        type: 'bar'
+      };
+
+      var strongSell = {
+        x: details['trends']['period'],
+        y: details['trends']['strongSell'],
+        name: 'strongSell',
+        type: 'bar'
+      };
+
+      var hold = {
+        x: details['trends']['period'],
+        y: details['trends']['hold'],
+        name: 'hold',
+        type: 'bar'
+      };
+      
+      var data = [strongBuy,buy,sell,strongSell,hold];
+      
+      var layout = {barmode: 'stack'};
+      
+      Plotly.newPlot('trendsChart', data, layout);
       
       var data = [trace1];
       Plotly.newPlot('defaultChart', data)

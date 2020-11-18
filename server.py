@@ -129,6 +129,7 @@ def get_stock_details():
         price_list.append(item['adjClose'])
     details_dict['price_chart'] = {'date_list' : date_list, 'price_list': price_list}
     details_dict['ticker'] = ticker
+    details_dict['trends'] = recommendation_trends(ticker)
 
     return jsonify(details_dict)
 
@@ -190,6 +191,34 @@ def show_success():
     session['name'] = Email
     crud.create_user(Email, Fname, Lname, password)
     return render_template('login.html')
+
+def recommendation_trends(ticker):
+    trends = apis.get_recommendation_trends(ticker)
+    date_list = []
+    trend_dict = {}
+    trend_dict['strongBuy'] = []
+    trend_dict['buy'] = []
+    trend_dict['sell'] = []
+    trend_dict['strongSell'] = []
+    trend_dict['hold'] = []
+    trend_dict['period'] = []
+   
+
+     
+    for item in trends:
+        date_list.append(item['period'])
+        trend_dict['strongBuy'].append(item['strongBuy']) 
+        trend_dict['buy'].append(item['buy'])
+        trend_dict['sell'].append(item['sell'])
+        trend_dict['strongSell'].append(item['strongSell'])
+        trend_dict['hold'].append(item['hold'])
+    trend_dict['period'] = date_list
+    return trend_dict
+
+
+
+
+    
 
 
 
