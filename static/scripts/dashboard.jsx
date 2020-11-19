@@ -25,6 +25,8 @@
 
   function Homepage() {
     const [userid, setUserid] =  React.useState({});
+    const [stockList, setStockList] =  React.useState([]);
+    const [showFavList, setShowFavList] = React.useState(true);
     React.useEffect(() => {
         fetch('/api/whoami').
         then((response) => response.json()).
@@ -33,7 +35,7 @@
     return (
         <React.Fragment>
         <Greeting userid={userid}></Greeting>
-        <SearchStocks userid={userid}></SearchStocks>
+        <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList} stockList={stockList} setStockList={setStockList}></SearchStocks>
         <div id='topContainer' hidden='true'>
           <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
           <div class="btn-group" role="group" aria-label="...">
@@ -48,8 +50,8 @@
           <div id='trendsChart'></div>
         </div>
 
-        
-        <FavListStocks userid={userid}></FavListStocks>
+        {showFavList &&
+        <FavListStocks stockList={stockList} setStockList={setStockList} userid={userid}></FavListStocks>}
        
         </React.Fragment>
     );
@@ -118,20 +120,32 @@
 
   function SearchStocks(props){
     const [keyword, setKeyword] =  React.useState('');
-    const [stockList, setStockList] =  React.useState([]);
+    const [searchStockList, setSearchStockList] =  React.useState([]);
 
     function handleChange(event){
         setKeyword(event.target.value)
     }
 
-      function handleSearch(){
-        const path='/api/search?keyword='.concat(keyword).concat('&user_id=').concat(props.userid.email)
-        fetch(path).
-        then((response) => response.json()).
-        then((response) => setStockList(response));
-      }
+    function setResults(res){
+      setSearchStockList(res)
+      props.setShowFavList(false)
+    }
+
+    function handleBack(){
+      props.setShowFavList(true)
+      window.location.reload()
+    }
+
+    function handleSearch(){
+      const path='/api/search?keyword='.concat(keyword).concat('&user_id=').concat(props.userid.email)
+      fetch(path).
+      then((response) => response.json()).
+      then((response) => setResults(response));
+    }
     return (
         <React.Fragment>
+            {props.showFavList == false && 
+            <ReactBootstrap.Button onClick={ () => handleBack() }> Back to dashboard </ReactBootstrap.Button>}
              <ReactBootstrap.InputGroup className="mb-3">
               <ReactBootstrap.FormControl onChange={handleChange}
                 placeholder="Search stocks here"
@@ -142,9 +156,7 @@
                 <ReactBootstrap.Button variant="outline-primary" onClick={handleSearch}>Search</ReactBootstrap.Button>
               </ReactBootstrap.InputGroup.Append>
             </ReactBootstrap.InputGroup>
-
-              
-              <SearchResults userid={props.userid} results={stockList}></SearchResults>
+              <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
 
         </React.Fragment>
     );
@@ -154,7 +166,6 @@
     if (typeof props.userid.email === "undefined"){
       return (<React.Fragment></React.Fragment>)
     }
-    const [stockList, setStockList] =  React.useState([]);
     const [details, setDetails] =  React.useState({}); 
     let showList = true;
     function handleDisplay(){
@@ -172,10 +183,10 @@
         React.useEffect(() => {
             fetch(path).
             then((response) => response.json()).
-            then((response) => setStockList(response.items));
+            then((response) => props.setStockList(response.items));
         }, [])
         const items = []
-        for (const [index, value] of stockList.entries()) {
+        for (const [index, value] of props.stockList.entries()) {
           items.push(
             <tr>
             <td>{index+1}</td>
@@ -215,7 +226,7 @@
         } 
       let finalDiplay;
       if(showList){
-        if(stockList.length > 0){
+        if(props.stockList.length > 0){
             finalDiplay = <div><h5>Stocks in your watchlist</h5>
             <ReactBootstrap.Table striped bordered hover size="sm">
           <thead> 
