@@ -167,6 +167,7 @@ def get_favourites():
     fav_stocks = crud.query_fav_stocks(user_email)
     fav_stock_obj = {}
     stock_list = []
+    market_news = apis.get_market_news()
     for stock in fav_stocks:
         stock_obj = {}
         stock_obj['ticker'] = stock.ticker
@@ -180,7 +181,9 @@ def get_favourites():
         stock_obj['start_date'] = stock.startDate 
         stock_list.append(stock_obj)
     fav_stock_obj['items'] = stock_list
+    fav_stock_obj['market_news'] = market_news
     return jsonify(fav_stock_obj)
+    
 
 @app.route('/adduser', methods=["POST"])
 def show_success():

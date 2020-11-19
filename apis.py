@@ -68,3 +68,6 @@ def get_ticker_news(ticker,start_date,end_date):
 def get_recommendation_trends(ticker):
     return finnhub_client.recommendation_trends(ticker)
 
+def get_market_news():
+    return finnhub_client.general_news('general', min_id=0) 
+

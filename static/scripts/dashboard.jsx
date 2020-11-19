@@ -25,7 +25,7 @@
 
   function Homepage() {
     const [userid, setUserid] =  React.useState({});
-    const [stockList, setStockList] =  React.useState([]);
+    
     const [showFavList, setShowFavList] = React.useState(true);
     React.useEffect(() => {
         fetch('/api/whoami').
@@ -35,7 +35,7 @@
     return (
         <React.Fragment>
         <Greeting userid={userid}></Greeting>
-        <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList} stockList={stockList} setStockList={setStockList}></SearchStocks>
+        <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
         <div id='topContainer' hidden='true'>
           <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
           <div class="btn-group" role="group" aria-label="...">
@@ -51,7 +51,7 @@
         </div>
 
         {showFavList &&
-        <FavListStocks stockList={stockList} setStockList={setStockList} userid={userid}></FavListStocks>}
+        <FavListStocks userid={userid}></FavListStocks>}
        
         </React.Fragment>
     );
@@ -166,6 +166,7 @@
     if (typeof props.userid.email === "undefined"){
       return (<React.Fragment></React.Fragment>)
     }
+    const [stockList, setStockList] =  React.useState({});
     const [details, setDetails] =  React.useState({}); 
     let showList = true;
     function handleDisplay(){
@@ -183,22 +184,24 @@
         React.useEffect(() => {
             fetch(path).
             then((response) => response.json()).
-            then((response) => props.setStockList(response.items));
+            then((response) => setStockList(response));
         }, [])
         const items = []
-        for (const [index, value] of props.stockList.entries()) {
-          items.push(
-            <tr>
-            <td>{index+1}</td>
-            <td><button type="button" class="btn btn-link" onClick={ () => handleGetData(value.ticker) }>{value.ticker}</button></td>
-            <td>{value.exchange}</td>
-            <td>{value.currency}</td>
-            <td>{value.high}</td>
-            <td>{value.low}</td>
-            <td>{value.opening_price}</td>
-            <td>{value.closing_price}</td>
-          </tr>
-          )
+        if(typeof stockList['items'] != "undefined"){
+          for (const [index, value] of stockList['items'].entries()) {
+            items.push(
+              <tr>
+              <td>{index+1}</td>
+              <td><button type="button" class="btn btn-link" onClick={ () => handleGetData(value.ticker) }>{value.ticker}</button></td>
+              <td>{value.exchange}</td>
+              <td>{value.currency}</td>
+              <td>{value.high}</td>
+              <td>{value.low}</td>
+              <td>{value.opening_price}</td>
+              <td>{value.closing_price}</td>
+            </tr>
+            )
+          }
         }
         const news_items = []
         
@@ -225,9 +228,31 @@
           showList = true;
         } 
       let finalDiplay;
+      const market_news = []
+      let newsHeading;
+      if(typeof stockList['market_news'] != "undefined"){
+        newsHeading = <h3> Latest Market News </h3>  
+        for (const [index, value] of stockList['market_news'].entries()) {
+          market_news.push(
+            
+            <div class="card flex-row flex-wrap">
+              
+              <div class="card-header border-0">
+                  <img src={value.image} alt=""></img>
+              </div>
+              <div class="card-block px-2">
+              <span class="label label-default">{value.source}</span>
+                  <a href={value.url} target="_blank"><p class="card-text">{value.headline}</p></a>
+              </div>
+              <div class="w-100"></div>
+            </div>
+          )
+        }
+      }
+      let favoritesList;
       if(showList){
-        if(props.stockList.length > 0){
-            finalDiplay = <div><h5>Stocks in your watchlist</h5>
+        if(items.length > 0){
+            favoritesList = <div><h5>Stocks in your watchlist</h5>
             <ReactBootstrap.Table striped bordered hover size="sm">
           <thead> 
             <tr>
@@ -244,7 +269,14 @@
           <tbody>
             {items}
           </tbody>
-        </ReactBootstrap.Table></div>}
+        </ReactBootstrap.Table>
+        </div>
+        }
+        finalDiplay = <div>
+                        {favoritesList}
+                        {newsHeading}
+                        {market_news}
+                      </div>
       }
      else{
        var topContainer = document.getElementById('topContainer')
