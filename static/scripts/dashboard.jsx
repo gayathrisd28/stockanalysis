@@ -173,6 +173,29 @@
       showList = true;
       setDetails({});
     }
+    function remove_from_list(ticker){
+        for (const [index, value] of stockList['items'].entries()) {
+          if(value.ticker == ticker){
+            stockList['items'].splice(index,index+1)
+            break
+          }
+        }
+        setStockList(stockList)
+      }
+      function handleUnfollow(ticker){
+            remove_from_list(ticker)
+            fetch('/favorites/remove', {
+              method: 'POST',
+              headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: props.userid.email,
+              ticker: ticker
+            })
+          })
+      }
     function handleGetData(ticker){
       const path='/api/details?ticker='.concat(ticker)
       fetch(path).
@@ -185,7 +208,7 @@
             fetch(path).
             then((response) => response.json()).
             then((response) => setStockList(response));
-        }, [])
+        },[])
         const items = []
         if(typeof stockList['items'] != "undefined"){
           for (const [index, value] of stockList['items'].entries()) {
@@ -199,6 +222,7 @@
               <td>{value.low}</td>
               <td>{value.opening_price}</td>
               <td>{value.closing_price}</td>
+              <td><button type="button" class="btn btn-link" onClick={ () => handleUnfollow(value.ticker) }>Unfollow</button></td>
             </tr>
             )
           }
@@ -249,7 +273,7 @@
           )
         }
       }
-      let favoritesList;
+      let favoritesList = [];
       if(showList){
         if(items.length > 0){
             favoritesList = <div><h5>Stocks in your watchlist</h5>
@@ -264,6 +288,7 @@
               <th>Low</th>
               <th>Opening price</th>
               <th>Closing price</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
