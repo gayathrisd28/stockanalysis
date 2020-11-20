@@ -130,6 +130,7 @@ def get_stock_details():
     details_dict['price_chart'] = {'date_list' : date_list, 'price_list': price_list}
     details_dict['ticker'] = ticker
     details_dict['trends'] = recommendation_trends(ticker)
+    details_dict['peer_list'] = apis.get_peers(ticker)
 
     return jsonify(details_dict)
 

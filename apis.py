@@ -71,3 +71,5 @@ def get_recommendation_trends(ticker):
 def get_market_news():
     return finnhub_client.general_news('general', min_id=0) 
 
+def get_peers(ticker):
+    return finnhub_client.company_peers(ticker)

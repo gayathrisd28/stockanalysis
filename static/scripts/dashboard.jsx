@@ -253,7 +253,9 @@
         } 
       let finalDiplay;
       const market_news = []
+      const peers = []
       let newsHeading;
+      let peer_Heading;
       if(typeof stockList['market_news'] != "undefined"){
         newsHeading = <h3> Latest Market News </h3>  
         for (const [index, value] of stockList['market_news'].entries()) {
@@ -273,6 +275,18 @@
           )
         }
       }
+      if(typeof details['peer_list'] != "undefined"){
+        peer_Heading = <h3> You may also like: </h3>  
+        for (const [index, value] of details['peer_list'].entries()) {
+          peers.push(
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item">{value}</li>
+              
+            </ul>
+          )
+        }
+      }
+
       let favoritesList = [];
       if(showList){
         if(items.length > 0){
@@ -466,7 +480,9 @@
                               </tr>
                             </tbody>
                             </table>
-                         {news_items}
+                            {peer_Heading}
+                            {peers}
+                            {news_items}
                     </div>
       
 
