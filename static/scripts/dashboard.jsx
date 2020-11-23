@@ -174,13 +174,14 @@
       setDetails({});
     }
     function remove_from_list(ticker){
-        for (const [index, value] of stockList['items'].entries()) {
+        let newList = {...stockList};
+        for (const [index, value] of newList['items'].entries()) {
           if(value.ticker == ticker){
-            stockList['items'].splice(index,index+1)
+            newList['items'].splice(index,index+1)
             break
           }
         }
-        setStockList(stockList)
+        setStockList(newList)
       }
       function handleUnfollow(ticker){
             remove_from_list(ticker)
@@ -275,12 +276,16 @@
           )
         }
       }
+      function handlePeerDetails(value){
+        handleGetData(value)
+      }
       if(typeof details['peer_list'] != "undefined"){
         peer_Heading = <h3> You may also like: </h3>  
         for (const [index, value] of details['peer_list'].entries()) {
           peers.push(
             <ul class="list-group list-group-horizontal">
-              <li class="list-group-item">{value}</li>
+              <button type="button" class="btn btn-link" onClick={ () => handlePeerDetails(value) }>{value}</button>
+              
               
             </ul>
           )
