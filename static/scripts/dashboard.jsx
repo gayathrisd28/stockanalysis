@@ -58,7 +58,7 @@
         <Greeting userid={userid}></Greeting>
         <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
         <div id='topContainer' hidden='true'>
-          <h2 id='heading' class='display4'></h2>
+          <span class='label'><h3 id='heading' class='display4'></h3></span>
           <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
           <div class="btn-group" role="group" aria-label="...">
             <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
@@ -166,6 +166,7 @@
     }
     return (
         <React.Fragment>
+            <div id='searchBox'>
             {props.showFavList == false && 
             <ReactBootstrap.Button onClick={ () => handleBack() }> Back to dashboard </ReactBootstrap.Button>}
               <div class="search-result-box card-box">
@@ -185,6 +186,7 @@
                     </div>
                     </div>
           <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
+          </div>
         </React.Fragment>
     );
   }
@@ -199,6 +201,10 @@
     function handleDisplay(){
       showList = true;
       setDetails({});
+    }
+
+    function setData(res){
+      setDetails(res)
     }
     function remove_from_list(ticker){
         let newList = {...stockList};
@@ -228,7 +234,7 @@
       const path='/api/details?ticker='.concat(ticker)
       fetch(path).
       then((response) => response.json()).
-      then((response) => setDetails(response));
+      then((response) => setData(response));
     }
     
     const path='/favourites/list?user_id='.concat(props.userid.email)
@@ -351,10 +357,13 @@
       }
      else{
        var topContainer = document.getElementById('topContainer')
+       var searchBox = document.getElementById('searchBox')
+       searchBox.hidden = true;
        topContainer.hidden = false;
+       var headingValue = details['metadata']['tiingo']['name'] + ' (' + details['metadata']['tiingo']['ticker'] +')'
 
        var heading = document.getElementById('heading')
-       heading.innerHTML = details['metadata']['tiingo']['name']
+       heading.innerHTML = headingValue
       var trace1 = {
         x:  details['price_chart']['date_list'],
         y: details['price_chart']['price_list'],
@@ -410,6 +419,8 @@
       var backBtn = document.getElementById('backButton')  
       backBtn.onclick = function(){
         var topContainer = document.getElementById('topContainer')
+        var searchBox = document.getElementById('searchBox')
+        searchBox.hidden = false;
         topContainer.hidden = true;
         handleDisplay()
       }
