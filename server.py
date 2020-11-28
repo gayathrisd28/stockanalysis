@@ -35,9 +35,9 @@ def show_homepage():
 def get_plot_json():
     ticker = request.args.get('ticker')
     ticker_price_history = apis.get_price_history_chart(ticker)
-    data = [
+    data = []
         
-    ]
+    
 
 @app.route('/api/whoami')
 def whoami():

@@ -13,11 +13,30 @@
     
   
         return <React.Fragment>
-        <h1 class="headings">    Welcome {props.userid.name} </h1>
-        <ReactBootstrap.Button variant="secondary" size="sm" onClick={handleLogout}>
-          Logout
-          </ReactBootstrap.Button>
-
+          <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Stock Portfolio</a>
+                    </li>
+                </ul>
+            <ul class="nav navbar-nav">
+                <li class="nav-item dropdown">
+                <a class="nav-link  dropdown-toggle" href="#" data-toggle="dropdown">
+                  <i class="fa fa-fw fa-user"></i> {props.userid.name}
+                </a>
+                  <ul class="dropdown-menu fullcontainer">
+                    <li class='fullcontainer'>            
+                      <a href='#' class='fullcontainer dropdown-item' variant="secondary" size="sm" onClick={handleLogout}>
+                        <i class="fas fa-sign-out-alt"></i>
+                          Logout
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+        </nav>
         </React.Fragment>
 
   }
@@ -34,9 +53,12 @@
     }, [])
     return (
         <React.Fragment>
+
+       
         <Greeting userid={userid}></Greeting>
         <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
         <div id='topContainer' hidden='true'>
+          <h2 id='heading' class='display4'></h2>
           <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
           <div class="btn-group" role="group" aria-label="...">
             <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
@@ -146,18 +168,23 @@
         <React.Fragment>
             {props.showFavList == false && 
             <ReactBootstrap.Button onClick={ () => handleBack() }> Back to dashboard </ReactBootstrap.Button>}
-             <ReactBootstrap.InputGroup className="mb-3">
-              <ReactBootstrap.FormControl onChange={handleChange}
-                placeholder="Search stocks here"
-                aria-label="Search stocks here"
-                aria-describedby="basic-addon2"
-              />
-              <ReactBootstrap.InputGroup.Append>
-                <ReactBootstrap.Button variant="outline-primary" onClick={handleSearch}>Search</ReactBootstrap.Button>
-              </ReactBootstrap.InputGroup.Append>
-            </ReactBootstrap.InputGroup>
-              <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
-
+              <div class="search-result-box card-box">
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="pt-3 pb-4">
+                                <div class="input-group">
+                                    <input type="text" placeholder="Search stocks here" id="" name="" class="form-control" onChange={handleChange} />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn waves-effect waves-light btn-custom" onClick={handleSearch}><i class="fa fa-search mr-1"></i></button>
+                                    </div>
+                                </div>
+                                <div class="mt-4 text-center">
+                                    <h4></h4></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+          <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
         </React.Fragment>
     );
   }
@@ -215,7 +242,7 @@
           for (const [index, value] of stockList['items'].entries()) {
             items.push(
               <tr>
-              <td>{index+1}</td>
+              <th scope='row'>{index+1}</th>
               <td><button type="button" class="btn btn-link" onClick={ () => handleGetData(value.ticker) }>{value.ticker}</button></td>
               <td>{value.exchange}</td>
               <td>{value.currency}</td>
@@ -223,7 +250,7 @@
               <td>{value.low}</td>
               <td>{value.opening_price}</td>
               <td>{value.closing_price}</td>
-              <td><button type="button" class="btn btn-link" onClick={ () => handleUnfollow(value.ticker) }>Unfollow</button></td>
+              <td><button type="button" class="action btn btn-link" onClick={ () => handleUnfollow(value.ticker) }><span style={{color: "red"}}><i class="far fa-times-circle fa-lg"></i></span></button></td>
             </tr>
             )
           }
@@ -284,7 +311,7 @@
         for (const [index, value] of details['peer_list'].entries()) {
           peers.push(
             <ul class="list-group list-group-horizontal">
-              <button type="button" class="btn btn-link" onClick={ () => handlePeerDetails(value) }>{value}</button>
+              <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }>{value}</a>
               
               
             </ul>
@@ -296,24 +323,24 @@
       if(showList){
         if(items.length > 0){
             favoritesList = <div><h5>Stocks in your watchlist</h5>
-            <ReactBootstrap.Table striped bordered hover size="sm">
-          <thead> 
+            <table class="table">
+          <thead class="thead-dark"> 
             <tr>
-              <th>#</th>
-              <th>Ticker</th>
-              <th>Exchange</th>
-              <th>Currency</th>
-              <th>High</th>
-              <th>Low</th>
-              <th>Opening price</th>
-              <th>Closing price</th>
-              <th></th>
+              <th scope="col">#</th>
+              <th scope="col">Ticker</th>
+              <th scope="col">Exchange</th>
+              <th scope="col">Currency</th>
+              <th scope="col">High</th>
+              <th scope="col">Low</th>
+              <th scope="col">Opening price</th>
+              <th scope="col">Closing price</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
             {items}
           </tbody>
-        </ReactBootstrap.Table>
+        </table>
         </div>
         }
         finalDiplay = <div>
@@ -325,6 +352,9 @@
      else{
        var topContainer = document.getElementById('topContainer')
        topContainer.hidden = false;
+
+       var heading = document.getElementById('heading')
+       heading.innerHTML = details['metadata']['tiingo']['name']
       var trace1 = {
         x:  details['price_chart']['date_list'],
         y: details['price_chart']['price_list'],
@@ -442,7 +472,6 @@
       
      
       finalDiplay = <div>
-                      <button type="button" class="btn btn-link" onClick={ () => handleDisplay() }>Back</button>
                       <h3>Stats</h3>
                       <table id='tableid' class="table">
                             <tbody>
