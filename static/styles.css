@@ -1,6 +1,6 @@
 img {
     height: 100px;
-    width: 100px;
+    width: 160px;
   }
   
   .melon-div {
@@ -10,6 +10,7 @@ img {
   }
   
   body {
+    padding-top: 70px;
     background-color:blue;
   }
   .center {
@@ -101,4 +102,13 @@ tr:hover .action {
 
 .label{
   display: inline;
+}
+
+.row-buffer{
+  margin-top: 20px;
+}
+
+.remove-width{
+  width: unset !important;
+  height: 40% !important;
 }

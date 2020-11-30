@@ -124,13 +124,23 @@ def get_stock_details():
     price_history = apis.get_price_history_chart(ticker,weeks_ago,to)
     date_list = []
     price_list = []
+    curPrice = None
+    prevPrice = None
     for item in price_history:
         date_list.append(item['date'])
-        price_list.append(item['adjClose'])
+        prevPrice = curPrice
+        curPrice = item['adjClose']
+        price_list.append(curPrice)
     details_dict['price_chart'] = {'date_list' : date_list, 'price_list': price_list}
     details_dict['ticker'] = ticker
     details_dict['trends'] = recommendation_trends(ticker)
     details_dict['peer_list'] = apis.get_peers(ticker)
+    details_dict['price_change'] = round(curPrice - prevPrice,2)
+    percentChange = abs(prevPrice-curPrice)/prevPrice*100
+    if(curPrice < prevPrice):
+        percentChange *=-1 
+    details_dict['cur_price'] = curPrice
+    details_dict['percent_change'] = round(percentChange,2)
 
     return jsonify(details_dict)
 

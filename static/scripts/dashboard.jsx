@@ -13,7 +13,7 @@
     
   
         return <React.Fragment>
-          <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+          <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
@@ -58,20 +58,37 @@
         <Greeting userid={userid}></Greeting>
         <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
         <div id='topContainer' hidden='true'>
+        <button id='backButton' class='btn btn-outline-primary btn-sm' type="submit">go back</button>
           <span class='label'><h3 id='heading' class='display4'></h3></span>
-          <p><button id='backButton' class='btn btn-default btn-sm' type="submit">back</button></p>
-          <div class="btn-group" role="group" aria-label="...">
-            <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
-            <button type="button" id='4weeks' class="btn btn-link">4 weeks</button>
-            <button type="button" id='3months' class="btn btn-link">3 months</button>
-            <button type="button" id='6months' class="btn btn-link">6 months</button>
-            <button type="button" id='1year' class="btn btn-link">1 year</button>
+          <table><thead><tr><th><h2 id='priceval' class='display4'></h2></th><th></th><th><h4 id='priceChange'></h4></th></tr></thead></table>
+          
+          
+          <div class='container'>
+            <div class='row'>
+              <div class='col'>
+              <h3>Price History</h3>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
+                  <button type="button" id='4weeks' class="btn btn-link">4 weeks</button>
+                  <button type="button" id='3months' class="btn btn-link">3 months</button>
+                  <button type="button" id='6months' class="btn btn-link">6 months</button>
+                  <button type="button" id='1year' class="btn btn-link">1 year</button>
+                </div> 
+                <div class='border border-primary'>
+                  <div id='defaultChart'></div>
+                </div>
+              </div>
+            </div>
+            <div class='row row-buffer'>
+              <div class='col'>
+                <h3>Recommendation Trends</h3>
+                <div class='border border-info'>
+                  <div id='trendsChart'></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div id='defaultChart'></div>
-          <h3>Recommendation Trends</h3>
-          <div id='trendsChart'></div>
-        </div>
-
+        </div>  
         {showFavList &&
         <FavListStocks userid={userid}></FavListStocks>}
        
@@ -288,6 +305,7 @@
       let finalDiplay;
       const market_news = []
       const peers = []
+
       let newsHeading;
       let peer_Heading;
       if(typeof stockList['market_news'] != "undefined"){
@@ -315,12 +333,12 @@
       if(typeof details['peer_list'] != "undefined"){
         peer_Heading = <h3> You may also like: </h3>  
         for (const [index, value] of details['peer_list'].entries()) {
-          peers.push(
-            <ul class="list-group list-group-horizontal">
-              <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }>{value}</a>
-              
-              
-            </ul>
+          peers.push(        
+            <div class="card card-custom mx-2 mb-3 bg-light">
+              <div class="card-body text-center">
+                <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }><h4>{value}</h4></a>
+              </div>
+            </div>
           )
         }
       }
@@ -358,16 +376,30 @@
      else{
        var topContainer = document.getElementById('topContainer')
        var searchBox = document.getElementById('searchBox')
+       var priceval = document.getElementById('priceval')
+       var priceChange = document.getElementById('priceChange')
        searchBox.hidden = true;
        topContainer.hidden = false;
        var headingValue = details['metadata']['tiingo']['name'] + ' (' + details['metadata']['tiingo']['ticker'] +')'
 
        var heading = document.getElementById('heading')
        heading.innerHTML = headingValue
+       priceval.innerText = details['cur_price']
+       priceChange.innerText  = ' '+details['price_change'] + '  (' + details['percent_change'] +'%)'
+       if(details['price_change'] > 0){
+        priceChange.style = 'color:lawngreen'
+      }else{
+       priceChange.style = 'color:red'
+      }
+
       var trace1 = {
         x:  details['price_chart']['date_list'],
         y: details['price_chart']['price_list'],
-        type: 'scatter'
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: {
+          color: 'green'
+        },
       };
       
       var strongBuy = {
@@ -430,7 +462,11 @@
           var trace1 = {
             x:  res['price_chart']['date_list'],
             y: res['price_chart']['price_list'],
-            type: 'scatter'
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: {
+              color: 'green'
+            },
           };
           var data = [trace1];
           Plotly.newPlot('defaultChart', data) 
@@ -442,6 +478,10 @@
           var trace1 = {
             x:  res['price_chart']['date_list'],
             y: res['price_chart']['price_list'],
+            mode: 'lines+markers',
+            line: {
+              color: 'green'
+            },
             type: 'scatter'
           };
           var data = [trace1];
@@ -454,6 +494,10 @@
           var trace1 = {
             x:  res['price_chart']['date_list'],
             y: res['price_chart']['price_list'],
+            mode: 'lines+markers',
+            line: {
+              color: 'green'
+            },
             type: 'scatter'
           };
           var data = [trace1];
@@ -466,6 +510,10 @@
           var trace1 = {
             x:  res['price_chart']['date_list'],
             y: res['price_chart']['price_list'],
+            mode: 'lines+markers',
+            line: {
+              color: 'green'
+            },
             type: 'scatter'
           };
           var data = [trace1];
@@ -483,51 +531,63 @@
       
      
       finalDiplay = <div>
-                      <h3>Stats</h3>
-                      <table id='tableid' class="table">
-                            <tbody>
-                              <tr id='test'>
-                                <th scope="row">Market Cap</th>
-                                <td>{details['metadata']['finnhub']['marketCapitalization']}</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">IPO</th>
-                                <td>{details['metadata']['finnhub']['ipo']}</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Industry</th>
-                                <td>{details['metadata']['finnhub']['finnhubIndustry']}</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Exchange</th>
-                                <td>{details['metadata']['finnhub']['exchange']}</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Share Outstanding</th>
-                                <td>{details['metadata']['finnhub']['shareOutstanding']}</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Country</th>
-                                <td>{details['metadata']['finnhub']['country']}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                          <h3>About</h3>
-                          <table class="table">
-                            <tbody>
-                              <tr>
-                                <th scope="row">Description</th>
-                                <td>{details['metadata']['tiingo']['description']}</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Website</th>
-                                <td>{details['metadata']['finnhub']['weburl']}</td>
-                              </tr>
-                            </tbody>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col">
+                            <h3>Stats</h3>
+                            <table id='tableid' class="table">
+                              <tbody>
+                                <tr id='test'>
+                                  <th scope="row">Market Cap</th>
+                                  <td>{details['metadata']['finnhub']['marketCapitalization']}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">IPO</th>
+                                  <td>{details['metadata']['finnhub']['ipo']}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Industry</th>
+                                  <td>{details['metadata']['finnhub']['finnhubIndustry']}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Exchange</th>
+                                  <td>{details['metadata']['finnhub']['exchange']}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Share Outstanding</th>
+                                  <td>{details['metadata']['finnhub']['shareOutstanding']}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Country</th>
+                                  <td>{details['metadata']['finnhub']['country']}</td>
+                                </tr>
+                              </tbody>
                             </table>
-                            {peer_Heading}
+                          </div>
+                          <div class="col">
+                            <h3>About</h3>
+                            <table class="table">
+                              <tbody>
+                                <tr>
+                                  <th scope="row">Description</th>
+                                  <td>{details['metadata']['tiingo']['description']}</td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Website</th>
+                                  <td>{details['metadata']['finnhub']['weburl']}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      {peer_Heading}
+                      <div class='container'>
+                        <div class="row justify-content-center">
                             {peers}
-                            {news_items}
+                        </div>
+                      </div>
+                      {news_items}
                     </div>
       
 
