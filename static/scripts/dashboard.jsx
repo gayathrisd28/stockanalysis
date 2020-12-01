@@ -13,11 +13,11 @@
     
   
         return <React.Fragment>
-          <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+          <nav class="blue-color navbar navbar-expand-md navbar-dark fixed-top">
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Stock Portfolio</a>
+                        <a class="nav-link" href="#">The Stock Portfolio</a>
                     </li>
                 </ul>
             <ul class="nav navbar-nav">
@@ -68,11 +68,11 @@
               <div class='col'>
               <h3>Price History</h3>
                 <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" id='2weeks' class="btn btn-link">2 Weeks</button>
-                  <button type="button" id='4weeks' class="btn btn-link">4 weeks</button>
-                  <button type="button" id='3months' class="btn btn-link">3 months</button>
-                  <button type="button" id='6months' class="btn btn-link">6 months</button>
-                  <button type="button" id='1year' class="btn btn-link">1 year</button>
+                  <button type="button" id='2weeks' class="btn btn-link btn-outline-info margin-right">2 Weeks</button>
+                  <button type="button" id='4weeks' class="btn btn-link btn-outline-info margin-right">4 weeks</button>
+                  <button type="button" id='3months' class="btn btn-link btn-outline-info margin-right">3 months</button>
+                  <button type="button" id='6months' class="btn btn-link btn-outline-info margin-right">6 months</button>
+                  <button type="button" id='1year' class="btn btn-link btn-outline-info">1 year</button>
                 </div> 
                 <div class='border border-primary'>
                   <div id='defaultChart'></div>
@@ -101,22 +101,23 @@
 
     const items = []
     function handleAddAndRemove(symbol,event){
-      if(event.target.textContent == "Follow"){
-          event.target.textContent = "Unfollow"
-          fetch('/favorites/add', {
-          method: 'POST',
-          headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          ticker: symbol
-        })
-      });
-    }
-    else if(event.target.textContent == "Unfollow"){
-      event.target.textContent = "Follow"
+      if(event.target.id == "Follow"){
+            event.target.id = "Unfollow"
+            event.target.className = 'fas fa-heart fa-lg'
+            fetch('/favorites/add', {
+            method: 'POST',
+            headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            ticker: symbol
+          })
+        });
+      } else if(event.target.id == "Unfollow"){
+      event.target.id = "Follow"
+      event.target.className = 'far fa-heart fa-lg'
       fetch('/favorites/remove', {
         method: 'POST',
         headers: {
@@ -135,24 +136,35 @@
   
     for (const [index, value] of elements.entries()) {
       items.push(
-      <ReactBootstrap.Card>
-        <ReactBootstrap.Card.Header>
-        
-          <b>{value.symbol}</b>  {value.name}
+
+      
+          <tr>
+            <td class='bg-white'>
+              <b>{value.symbol}</b>  {value.name}
+              
+              {value.isfavorite?
+              <button type="button" class="btn btn-link right-align" onClick={ (e) => handleAddAndRemove(value.symbol,e) }><span style={{color: "red"}}><i id='Unfollow' class="fas fa-heart fa-lg"></i></span></button>:
+              <button type="button"  class="btn btn-link right-align" onClick={ (e) => handleAddAndRemove(value.symbol,e) }><span style={{color: "red"}}><i id='Follow' class="far fa-heart fa-lg"></i></span></button>
+              }
+            </td>
+          </tr>
           
-          {value.isfavorite?
-          
-          <button class="float-right" onClick={ (e) => handleAddAndRemove(value.symbol,e) }>Unfollow</button>:
-            <button class="float-right" onClick={ (e) => handleAddAndRemove(value.symbol,e) }>Follow</button>
-          }
-          
-        </ReactBootstrap.Card.Header>
-      </ReactBootstrap.Card>
+       
       )
     }
     return (
         <React.Fragment>
-          {items}
+          <div class='container remove-padding'>
+            <div class='row'>
+              <div class='col'>
+                <table class='table'>
+                  <tbody>
+                {items}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </React.Fragment>
     )
   }
@@ -184,26 +196,22 @@
     return (
         <React.Fragment>
             <div id='searchBox'>
-            {props.showFavList == false && 
-            <ReactBootstrap.Button onClick={ () => handleBack() }> Back to dashboard </ReactBootstrap.Button>}
-              <div class="search-result-box card-box">
-                    <div class="row">
-                        <div class="col-md-8 offset-md-2">
-                            <div class="pt-3 pb-4">
-                                <div class="input-group">
-                                    <input type="text" placeholder="Search stocks here" id="" name="" class="form-control" onChange={handleChange} />
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn waves-effect waves-light btn-custom" onClick={handleSearch}><i class="fa fa-search mr-1"></i></button>
-                                    </div>
-                                </div>
-                                <div class="mt-4 text-center">
-                                    <h4></h4></div>
-                            </div>
-                        </div>
+              {props.showFavList == false && 
+              <ReactBootstrap.Button onClick={ () => handleBack() }> Back to dashboard </ReactBootstrap.Button>}
+              <div class='container med-width'>
+                <div class='row'>
+                  <div class='col'>
+                    <div class="input-group">
+                      <input type="text" placeholder="Search stocks here" id="" name="" class="form-control" onChange={handleChange} />
+                      <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" onClick={handleSearch}><i class="fa fa-search mr-1"></i></button>
+                      </div>
                     </div>
-                    </div>
-          <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
-          </div>
+                    <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
+                  </div>
+                </div>
+              </div>
+            </div>
         </React.Fragment>
     );
   }
@@ -264,7 +272,7 @@
         if(typeof stockList['items'] != "undefined"){
           for (const [index, value] of stockList['items'].entries()) {
             items.push(
-              <tr>
+              <tr id='showhide'>
               <th scope='row'>{index+1}</th>
               <td><button type="button" class="btn btn-link" onClick={ () => handleGetData(value.ticker) }>{value.ticker}</button></td>
               <td>{value.exchange}</td>
@@ -331,12 +339,12 @@
         handleGetData(value)
       }
       if(typeof details['peer_list'] != "undefined"){
-        peer_Heading = <h3> You may also like: </h3>  
+        peer_Heading = <h3> You may also like </h3>  
         for (const [index, value] of details['peer_list'].entries()) {
           peers.push(        
             <div class="card card-custom mx-2 mb-3 bg-light">
               <div class="card-body text-center">
-                <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }><h4>{value}</h4></a>
+              <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }><h4><span class="label label-success">{value}</span></h4></a>
               </div>
             </div>
           )
@@ -346,32 +354,45 @@
       let favoritesList = [];
       if(showList){
         if(items.length > 0){
-            favoritesList = <div><h5>Stocks in your watchlist</h5>
-            <table class="table">
-          <thead class="thead-dark"> 
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Ticker</th>
-              <th scope="col">Exchange</th>
-              <th scope="col">Currency</th>
-              <th scope="col">High</th>
-              <th scope="col">Low</th>
-              <th scope="col">Opening price</th>
-              <th scope="col">Closing price</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items}
-          </tbody>
-        </table>
-        </div>
+            favoritesList = 
+            
+                  <div><h5>Stocks in your watchlist</h5>
+                  <table class="table">
+                <thead class="red-color"> 
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Ticker</th>
+                    <th scope="col">Exchange</th>
+                    <th scope="col">Currency</th>
+                    <th scope="col">High</th>
+                    <th scope="col">Low</th>
+                    <th scope="col">Opening price</th>
+                    <th scope="col">Closing price</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items}
+                </tbody>
+              </table>
+              </div>
         }
         finalDiplay = <div>
-                        {favoritesList}
-                        {newsHeading}
-                        {market_news}
+                        <div class='container high-width remove-padding'>
+                          <div>
+                            <div class='col'>
+                              {favoritesList}
+                            </div>
+                          </div>
+                          <div>
+                            <div class='col'>
+                              {newsHeading}
+                              {market_news}
+                            </div>
+                          </div>
+                        </div>
                       </div>
+
       }
      else{
        var topContainer = document.getElementById('topContainer')
@@ -574,7 +595,7 @@
                                 </tr>
                                 <tr>
                                   <th scope="row">Website</th>
-                                  <td>{details['metadata']['finnhub']['weburl']}</td>
+                                  <td><a href={details['metadata']['finnhub']['weburl']} target="_blank">{details['metadata']['finnhub']['weburl']}</a></td>
                                 </tr>
                               </tbody>
                             </table>
@@ -582,11 +603,12 @@
                         </div>
                       </div>
                       {peer_Heading}
-                      <div class='container'>
+                      <div class='container high-width'>
                         <div class="row justify-content-center">
                             {peers}
                         </div>
                       </div>
+                      <h3> In the news</h3>
                       {news_items}
                     </div>
       

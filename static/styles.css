@@ -11,7 +11,7 @@ img {
   
   body {
     padding-top: 70px;
-    background-color:blue;
+    background-color: #ddd7d6 !important;
   }
   .center {
     display: block;
@@ -86,7 +86,7 @@ img {
   display: none !important;
 }
 
-tr:hover .action {
+#showhide:hover .action {
   display: inline !important;
 }
 
@@ -111,4 +111,46 @@ tr:hover .action {
 .remove-width{
   width: unset !important;
   height: 40% !important;
+}
+
+h3{
+  font-family: sans-serif;
+}
+
+.margin-right{
+  margin-right: 5px !important;
+}
+
+.high-width{
+  max-width: 95% !important;
+}
+
+.med-width{
+  max-width: 60% !important;
+}
+
+.bg-white{
+  background-color: white !important;
+}
+
+.remove-padding{
+  padding-left: unset !important;
+  padding-right: unset !important;
+  padding: unset !important;
+}
+
+.right-align {
+  float: right !important;
+}
+
+.with-image{
+  background-image: url('/static/images/investing-stocks.jpg');
+}
+
+.blue-color{
+  background-color: #000081 !important;
+}
+
+.red-color{
+  background-color: #DF274c !important;
 }

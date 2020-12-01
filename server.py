@@ -134,7 +134,9 @@ def get_stock_details():
     details_dict['price_chart'] = {'date_list' : date_list, 'price_list': price_list}
     details_dict['ticker'] = ticker
     details_dict['trends'] = recommendation_trends(ticker)
-    details_dict['peer_list'] = apis.get_peers(ticker)
+    peer_list = apis.get_peers(ticker)
+    peer_list.pop(0)
+    details_dict['peer_list'] = peer_list
     details_dict['price_change'] = round(curPrice - prevPrice,2)
     percentChange = abs(prevPrice-curPrice)/prevPrice*100
     if(curPrice < prevPrice):
