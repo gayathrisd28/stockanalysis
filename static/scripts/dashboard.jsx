@@ -17,12 +17,12 @@
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">The Stock Portfolio</a>
+                        <h5><a class="nav-link white-color gfont" href="#">Stock Tracker</a></h5>
                     </li>
                 </ul>
             <ul class="nav navbar-nav">
                 <li class="nav-item dropdown">
-                <a class="nav-link  dropdown-toggle" href="#" data-toggle="dropdown">
+                <a class="nav-link  dropdown-toggle white-color" href="#" data-toggle="dropdown">
                   <i class="fa fa-fw fa-user"></i> {props.userid.name}
                 </a>
                   <ul class="dropdown-menu fullcontainer">
@@ -58,7 +58,7 @@
         <Greeting userid={userid}></Greeting>
         <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
         <div id='topContainer' hidden='true'>
-        <button id='backButton' class='btn btn-outline-primary btn-sm' type="submit">go back</button>
+        <button id='backButton' class='btn btn-outline-success btn-sm' type="submit">go back</button>
           <span class='label'><h3 id='heading' class='display4'></h3></span>
           <table><thead><tr><th><h2 id='priceval' class='display4'></h2></th><th></th><th><h4 id='priceChange'></h4></th></tr></thead></table>
           
@@ -67,12 +67,22 @@
             <div class='row'>
               <div class='col'>
               <h3>Price History</h3>
-                <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" id='2weeks' class="btn btn-link btn-outline-info margin-right">2 Weeks</button>
-                  <button type="button" id='4weeks' class="btn btn-link btn-outline-info margin-right">4 weeks</button>
-                  <button type="button" id='3months' class="btn btn-link btn-outline-info margin-right">3 months</button>
-                  <button type="button" id='6months' class="btn btn-link btn-outline-info margin-right">6 months</button>
-                  <button type="button" id='1year' class="btn btn-link btn-outline-info">1 year</button>
+                <div class="btn-group btn-group-toggle" data-toggle='buttons'>
+                  <label id='2weeks' class="btn btn-outline-success margin-right active">
+                    <input type="radio" name="options" autocomplete="off" checked /> 2 weeks
+                  </label>
+                  <label id="4weeks" class="btn btn-outline-success margin-right">
+                  <input type="radio" name="options"/> 4 weeks
+                  </label>
+                  <label id="3months" class="btn btn-outline-success margin-right">
+                    <input type="radio" name="options" />3 months
+                  </label>
+                  <label id="6months" class="btn btn-outline-success margin-right">
+                    <input type="radio" name="options" />6 months
+                  </label>
+                  <label id="1year" class="btn btn-outline-success">
+                    <input type="radio" name="options" />1 year
+                  </label>
                 </div> 
                 <div class='border border-primary'>
                   <div id='defaultChart'></div>
@@ -197,7 +207,7 @@
         <React.Fragment>
             <div id='searchBox'>
               {props.showFavList == false && 
-              <ReactBootstrap.Button onClick={ () => handleBack() }> Back to dashboard </ReactBootstrap.Button>}
+              <ReactBootstrap.Button onClick={ () => handleBack() }> back </ReactBootstrap.Button>}
               <div class='container med-width'>
                 <div class='row'>
                   <div class='col'>
@@ -341,12 +351,12 @@
       if(typeof details['peer_list'] != "undefined"){
         peer_Heading = <h3> You may also like </h3>  
         for (const [index, value] of details['peer_list'].entries()) {
-          peers.push(        
-            <div class="card card-custom mx-2 mb-3 bg-light">
-              <div class="card-body text-center">
-              <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }><h4><span class="label label-success">{value}</span></h4></a>
+          peers.push( 
+              <div class="card card-custom bg-bisque">
+                <div class="card-body text-center">
+                <a type="button" href="#top" class="btn btn-link" onClick={ () => handlePeerDetails(value) }><h4><span class="label label-success">{value}</span></h4></a>
+                </div>
               </div>
-            </div>
           )
         }
       }
@@ -356,7 +366,7 @@
         if(items.length > 0){
             favoritesList = 
             
-                  <div><h5>Stocks in your watchlist</h5>
+                  <div><h3>Your watchlist</h3>
                   <table class="table">
                 <thead class="red-color"> 
                   <tr>
@@ -601,18 +611,24 @@
                             </table>
                           </div>
                         </div>
-                      </div>
-                      {peer_Heading}
-                      <div class='container high-width'>
-                        <div class="row justify-content-center">
-                            {peers}
+                      <div class='row'>
+                        <div class='col'>
+                          {peer_Heading}
                         </div>
                       </div>
-                      <h3> In the news</h3>
-                      {news_items}
+                      <div class='high-width'>
+                        <div class="row justify-content-center">
+                          {peers}
+                        </div>
+                      </div>
+                      <div class='row add-margin'>
+                        <div class='col'>
+                          <h3> In the news</h3>
+                          {news_items}
+                        </div>
+                      </div>
+                      </div>
                     </div>
-      
-
      }
     return (
       <React.Fragment>

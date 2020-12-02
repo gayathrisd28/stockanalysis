@@ -3,15 +3,14 @@ img {
     width: 160px;
   }
   
-  .melon-div {
-    display: inline-block;
-    padding: 10px;
-    width: 205px;
-  }
-  
   body {
     padding-top: 70px;
-    background-color: #ddd7d6 !important;
+    background-color: #f5f5e4 !important;
+    font-family: 'Kanit', sans-serif !important;
+  }
+
+  h3{
+    font-weight: 700 !important;
   }
   .center {
     display: block;
@@ -129,14 +128,27 @@ h3{
   max-width: 60% !important;
 }
 
+.low-width{
+  width:20% !important;
+}
+
 .bg-white{
   background-color: white !important;
+}
+
+.bg-bisque{
+  background-color: bisque !important;
 }
 
 .remove-padding{
   padding-left: unset !important;
   padding-right: unset !important;
   padding: unset !important;
+}
+
+.add-padding{
+  padding:20px !important;
+  margin-left: 40px !important;
 }
 
 .right-align {
@@ -153,4 +165,81 @@ h3{
 
 .red-color{
   background-color: #DF274c !important;
+}
+
+.white-color{
+  color:white !important;
+}
+
+#iconn{
+
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+  color: white;
+  
+  }
+  #iconn1{
+  
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+  color: white;
+  
+  }
+
+  #login{
+    background-color:rgba(13,13,13,0.2);
+    min-height:500px;
+    padding: 40px 80px 40px 80px;
+    box-shadow: -10px -10px 9px #33cc33;
+    
+    }
+
+    #text1{
+
+      border-radius: 0;
+      height: 30px;
+    }
+    #text2{
+    
+      border-radius: 0;
+      height: 30px;
+    }
+    
+    .btn-login{
+      width: 50%;
+      float: left;
+      height: 35px;
+      font-size: 18px;
+      margin-left: 65px
+    }
+
+    .user{
+      font-size: 29px;
+      
+      font-family: arabic typesetting;
+      
+      color: white;
+      }
+
+      .icons{
+        line-height: unset !important;
+      }
+.gfont{
+  font-family: 'Fredoka One', cursive !important;
+}
+.card-custom{
+  margin-right:5px !important;
+}
+
+.btn-link{
+  font-weight: 700 !important;
+  color: limegreen !important;
+}
+
+.btn-primary{
+  background-color: green !important;
+}
+
+.add-margin{
+  margin-top: 30px;
 }
