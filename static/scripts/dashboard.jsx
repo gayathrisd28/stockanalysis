@@ -44,7 +44,7 @@
 
   function Homepage() {
     const [userid, setUserid] =  React.useState({});
-    
+    const [favList, setFavList] = React.useState({});
     const [showFavList, setShowFavList] = React.useState(true);
     React.useEffect(() => {
         fetch('/api/whoami').
@@ -56,7 +56,7 @@
 
        
         <Greeting userid={userid}></Greeting>
-        <SearchStocks userid={userid} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
+        <SearchStocks userid={userid} favList={favList} setFavList={setFavList} showFavList={showFavList} setShowFavList={setShowFavList}></SearchStocks>
         <div id='topContainer' hidden='true'>
         <button id='backButton' class='btn btn-outline-success btn-sm' type="submit">go back</button>
           <span class='label'><h3 id='heading' class='display4'></h3></span>
@@ -100,16 +100,30 @@
           </div>
         </div>  
         {showFavList &&
-        <FavListStocks userid={userid}></FavListStocks>}
+        <FavListStocks favList={favList} setFavList={setFavList} userid={userid}></FavListStocks>}
        
         </React.Fragment>
     );
   }
+
   function SearchResults(props){
     const elements = props.results
     const email = props.userid.email
 
     const items = []
+
+    function removeFromList(symbol){
+      const newList = {...props.favList};
+      let len = newList['items'].length
+      let i = 0;  
+      for (i=0;i<len;i++){
+        if(newList['items'][i]['ticker'] == symbol){
+          newList['items'].splice(i,1)
+          break;
+        }
+      }
+      props.setFavList(newList)
+    }
     function handleAddAndRemove(symbol,event){
       if(event.target.id == "Follow"){
             event.target.id = "Unfollow"
@@ -139,7 +153,7 @@
         ticker: symbol
       })
     });
-
+    removeFromList(symbol);
     }
   }
     
@@ -194,7 +208,7 @@
 
     function handleBack(){
       props.setShowFavList(true)
-      window.location.reload()
+      ///window.location.reload()
     }
 
     function handleSearch(){
@@ -217,7 +231,8 @@
                         <button type="button" class="btn btn-primary" onClick={handleSearch}><i class="fa fa-search mr-1"></i></button>
                       </div>
                     </div>
-                    <SearchResults userid={props.userid} results={searchStockList}></SearchResults>
+                    {props.showFavList == false && 
+                    <SearchResults favList={props.favList} setFavList={props.setFavList} userid={props.userid} results={searchStockList}></SearchResults>}
                   </div>
                 </div>
               </div>
@@ -230,7 +245,7 @@
     if (typeof props.userid.email === "undefined"){
       return (<React.Fragment></React.Fragment>)
     }
-    const [stockList, setStockList] =  React.useState({});
+    //const [stockList, setStockList] =  React.useState({});
     const [details, setDetails] =  React.useState({}); 
     let showList = true;
     function handleDisplay(){
@@ -240,16 +255,17 @@
 
     function setData(res){
       setDetails(res)
+      window.scrollTo(0, 0)
     }
     function remove_from_list(ticker){
-        let newList = {...stockList};
+        let newList = {...props.favList};
         for (const [index, value] of newList['items'].entries()) {
           if(value.ticker == ticker){
-            newList['items'].splice(index,index+1)
+            newList['items'].splice(index,1)
             break
           }
         }
-        setStockList(newList)
+        props.setFavList(newList)
       }
       function handleUnfollow(ticker){
             remove_from_list(ticker)
@@ -276,11 +292,11 @@
         React.useEffect(() => {
             fetch(path).
             then((response) => response.json()).
-            then((response) => setStockList(response));
+            then((response) => props.setFavList(response));
         },[])
         const items = []
-        if(typeof stockList['items'] != "undefined"){
-          for (const [index, value] of stockList['items'].entries()) {
+        if(typeof props.favList['items'] != "undefined"){
+          for (const [index, value] of props.favList['items'].entries()) {
             items.push(
               <tr id='showhide'>
               <th scope='row'>{index+1}</th>
@@ -326,9 +342,9 @@
 
       let newsHeading;
       let peer_Heading;
-      if(typeof stockList['market_news'] != "undefined"){
+      if(typeof props.favList['market_news'] != "undefined"){
         newsHeading = <h3> Latest Market News </h3>  
-        for (const [index, value] of stockList['market_news'].entries()) {
+        for (const [index, value] of props.favList['market_news'].entries()) {
           market_news.push(
             
             <div class="card flex-row flex-wrap">
@@ -344,6 +360,11 @@
             </div>
           )
         }
+      }
+      function checkActive(element){
+          if(element.className.includes("active")){
+            element.className = "btn btn-outline-success margin-right"
+          }
       }
       function handlePeerDetails(value){
         handleGetData(value)
@@ -394,7 +415,7 @@
                               {favoritesList}
                             </div>
                           </div>
-                          <div>
+                          <div class='scrollbar'>
                             <div class='col'>
                               {newsHeading}
                               {market_news}
@@ -412,13 +433,23 @@
        searchBox.hidden = true;
        topContainer.hidden = false;
        var headingValue = details['metadata']['tiingo']['name'] + ' (' + details['metadata']['tiingo']['ticker'] +')'
-
+       var chartButtonTwo = document.getElementById('2weeks')
+       chartButtonTwo.classList.add('active')
+       var chartBtnFour = document.getElementById('4weeks')
+       chartBtnFour.checked=false;
+       checkActive(chartBtnFour)
+       var chartBtnThree = document.getElementById('3months')
+       checkActive(chartBtnThree)
+       var chartBtnSix = document.getElementById('6months')
+       checkActive(chartBtnSix)
+       var chartBtnOne = document.getElementById('1year')
+       checkActive(chartBtnOne)
        var heading = document.getElementById('heading')
        heading.innerHTML = headingValue
-       priceval.innerText = details['cur_price']
+       priceval.innerText = '$' + details['cur_price'] 
        priceChange.innerText  = ' '+details['price_change'] + '  (' + details['percent_change'] +'%)'
        if(details['price_change'] > 0){
-        priceChange.style = 'color:lawngreen'
+        priceChange.style = 'color:green'
       }else{
        priceChange.style = 'color:red'
       }
@@ -621,7 +652,7 @@
                           {peers}
                         </div>
                       </div>
-                      <div class='row add-margin'>
+                      <div class='row add-margin scrollbar'>
                         <div class='col'>
                           <h3> In the news</h3>
                           {news_items}
